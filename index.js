@@ -27,12 +27,11 @@ app.use(cors())
 app.use(express.json())
 app.use(express.static('build'))
 
-let persons = [
-]
-
-app.get('info', (req, res) => {
-  const requestTime = new Date(Date.now())
-  res.send(`<p>Phonebook has info for ${persons.length} people</p> <p>${requestTime}</p>`)
+app.get('/info', (req, res) => {
+  Person.find({}).then(persons => {
+    const requestTime = new Date(Date.now())
+    res.send(`<p>Phonebook has info for ${persons.length} people</p> <p>${requestTime}</p>`)
+  })
 })
 
 app.get('/api/persons', (request, response) => {
@@ -53,10 +52,9 @@ app.get('/api/persons/:id', (req, res, next) => {
     .catch(error => next(error))
 })
 
-
 app.delete('/api/persons/:id', (request, response, next) => {
   Person.findByIdAndRemove(request.params.id)
-    .then(result => {
+    .then(() => {
       response.status(204).end()
     })
     .catch(error => next(error))
@@ -91,8 +89,12 @@ app.post('/api/persons', (request, response, next) => {
 app.put('/api/persons/:id', (request, response, next) => {
   const { name, number } = request.body
 
+  const person = {
+    name, number
+  }
+
   Person.findByIdAndUpdate(
-    request.params.id,
+    request.params.id, person,
     { new: true, runValidators: true, context: 'query' }
   )
     .then(updatedPerson => {

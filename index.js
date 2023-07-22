@@ -23,10 +23,6 @@ const errorHandler = (error, request, response, next) => {
   next(error)
 }
 
-const unknownEndpoint = (request, response) => {
-  response.status(404).send({ error: 'unknown endpoint' })
-}
-
 app.use(cors())
 app.use(express.json())
 app.use(express.static('build'))
@@ -105,7 +101,6 @@ app.put('/api/persons/:id', (request, response, next) => {
     .catch(error => next(error))
 })
 
-app.use(unknownEndpoint)
 app.use(errorHandler)
 
 const PORT = process.env.PORT || 3001

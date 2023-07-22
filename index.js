@@ -27,6 +27,7 @@ app.use(cors())
 app.use(express.json())
 app.use(express.static('build'))
 
+
 app.get('/info', (req, res) => {
   Person.find({}).then(persons => {
     const requestTime = new Date(Date.now())
